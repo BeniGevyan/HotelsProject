@@ -1,0 +1,27 @@
+.bodyPeh {
+  margin: 0px auto;
+  width: 80%;
+  height: 100%;
+}
+.title {
+  text-align: center;
+  margin: 10px auto;
+}
+.orderForm {
+  margin: 10px auto;
+}
+label{
+    color: black;
+ text-align: center;
+}
+input{
+    display: block;
+    margin:auto;
+}
+.city,.checkIn,.checkOut,.btuDiv{
+    margin: auto ;
+}
+.btu{
+    height: 32px;
+    width: 126px;
+}
