@@ -8,19 +8,27 @@ start();
 
 
 function start() {
+    timeValidation();
+    
     addEvent();
 }
 
-function addEvent() {
+function addEvent() {   
 
-    ELMENT.$FROM_EL.addEventListener("submit", event => {
-        e.preventDefault();
-        const Order = {
-            city: (event.target.city.value),
-            checkIn: (event.target.checkIn.value),
-            checkOut: (event.target.checkOut.value),
+    ELMENT.$FROM_EL.on( "submit", function (event) {
+        event.preventDefault();
+        const form = event.target
+        const data ={
+            checkIn: form.checkIn.value,
+            checkOut: form.checkOut.value,
         }
-        console.log(Order);
+
+
+
+
+
+        form.reset();
+        console.log(data);
     });
 
 }
@@ -34,6 +42,28 @@ function CheckingAndCheckOutForm() {
 function CreataOrder() {
 
 }
+function timeValidation() {
+    const checkIn =document.getElementById('checkIn');
+    checkIn.setAttribute("min", getTodayString());
+   
+    
+}
+function getTodayString() {
+    const today = new Date();
+    const day = today.getDate();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    return [year, padLeadingZero(month), padLeadingZero(day)].join('-');
+}
+function padLeadingZero(number) {
+    return number.toString().length < 2 ? `0${number}` : number;
+}
 
+function getminDeyForCheckout(){
+    document.getElementById('checkIn').ready(
+        
+    )
+    document.getElementById('checkOut').setAttribute("min", checkIn.toString());
 
+}
 
