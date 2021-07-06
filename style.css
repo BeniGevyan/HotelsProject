@@ -10,18 +10,58 @@
 .orderForm {
   margin: 10px auto;
 }
-label{
-    color: black;
- text-align: center;
+label {
+  color: black;
+  text-align: center;
 }
-input{
-    display: block;
-    margin:auto;
+input {
+  display: block;
+  margin: auto;
 }
-.city,.checkIn,.checkOut,.btuDiv{
-    margin: auto ;
+.city,
+.checkIn,
+.checkOut,
+.btuDiv {
+  margin: auto;
 }
-.btu{
-    height: 32px;
-    width: 126px;
+.btu {
+  height: 32px;
+  width: 126px;
+}
+.roadelSurface {
+  margin: 20px;
+  background-color: gray;
+  border-radius: 20px;
+  height: 300px;
+  width: 600px;
+}
+.loader {
+  margin: auto;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid blue;
+  border-right: 16px solid blue;
+  border-bottom: 16px solid blue;
+  width: 200px;
+  height: 200px;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

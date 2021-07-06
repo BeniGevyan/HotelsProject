@@ -11,12 +11,14 @@ function start() {
     timeValidation('checkIn', new Date());
     validaSelectedtDaet();
     addEvent();
+   
 }
 
 function addEvent() {
 
     ELMENT.$FROM_EL.on("submit", function (event) {
         event.preventDefault();
+        getTokons();
         const form = event.target
         const data = {
             checkIn: form.checkIn.value,
@@ -26,6 +28,20 @@ function addEvent() {
         console.log(data);
     });
 
+}
+function getTokons() {
+    $.get({
+        method: "post",
+        url: 'https://test.api.amadeus.com/v1/security/oauth2/token',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: "grant_type=client_credentials&client_id=6NvSjIcGLPFLt7eW4IGHmdJuV2AUfY8O&client_secret=AI5zIvWHnSvdXBcO",
+        success: function(result) {
+            if (result) {
+                console.log(result);
+            }
+        }
+    });
+    
 }
 
 function CreatingHotel() {
@@ -39,8 +55,8 @@ function CreataOrder() {
 }
 
 function timeValidation(id, date) {
-    console.log(id,date);
-  document.getElementById(id).setAttribute("min", changeDateFormat(date));   
+    console.log(id, date);
+    document.getElementById(id).setAttribute("min", changeDateFormat(date));
 }
 
 function changeDateFormat(date) {
@@ -64,8 +80,16 @@ function validaSelectedtDaet() {
             const newDay = new Date(`${date}`);
             newDay.setDate(newDay.getDate() + 1);
             timeValidation('checkOut', newDay)
-        
+
         }
     })
 
 }
+
+
+
+
+
+
+
+
