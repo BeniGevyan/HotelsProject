@@ -2,7 +2,9 @@ const ELMENT = {
     $FROM_EL: $('#orderForm'),
     $DIV_CONTENER: $('#result'),
 }
+
 const order = [];
+
 const city = {
     "Chicago": "CHI",
     "London": "LON",
@@ -12,16 +14,6 @@ const city = {
 }
 
 
-
-
-function cretCity(params) {
-
-    $('#city').append(
-        `
-    <option value="${params[1]}">${params[0]}</option>
-    `)
-
-}
 start();
 
 
@@ -71,9 +63,6 @@ function getTokons() {
 
 }
 
-function CreatingHotel() {
-
-}
 function CheckingAndCheckOutForm() {
 
 }
@@ -114,6 +103,13 @@ function validaSelectedtDaet() {
 
 }
 
+function cretCity(params) {
+    $('#city').append(
+        `
+        <option value="${params[1]}">${params[0]}</option>
+        `)
+}
+
 function startBtn() {
     $('.btn').removeAttr('disabled');
     $('.btn').removeClass('btn-secondary');
@@ -139,3 +135,68 @@ function startBtn() {
 
 
 
+
+function CreatingHotel(hotel) {
+    ELMENT.$DIV_CONTENER.append(`
+    <div class="HotelDetails d-flex flex-row">
+    <div class="poto p2">
+        <img src="IMEG/237729537.jpg" alt="" class="hotelImg">
+    </div>
+    <div class="text p2">
+
+        <div class="bodyOfContent">
+            <h1>HIPARC12</h1>
+            <span>&#11088;</span>
+            <span>&#11088;</span>
+            <span>&#11088;</span>
+            <span>&#11088;</span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
+            <p>דירגו אותו 9.2 </p>
+        </div>
+
+        <div class="endOfContent">
+            <p>מלון הייפארק אדג'יו סרי ואל ד'אירופ (Adagio Serris Val d Europe) ממוקם במרחק של קילומטר וחצי
+                מדיסנילנד פריז (Disneyland Paris), ומציע גישה חופשית לסאונה, לבריכה החיצונית ולחדר הכושר,
+                וכן
+                דלפק
+                קבלה הפועל 24 שעות ביממה.
+
+                הסוויטות ויחידות הסטודיו במקום מעוצבות בסגנון עכשווי ומציעות אירוח בשירות עצמי, אינטרנט
+                אלחוטי
+                חינם,
+                טלוויזיית LCD ומיזוג אוויר. בחדרי הרחצה יסופק לכם מייבש שיער. ניתן לבקש גם יחידות סטודיו
+                מחוברות.
+
+                מדי בוקר, יוגש לכם במלון מזנון ארוחת בוקר בסגנון קונטיננטלי. לאחר ארוחת הבוקר, תוכלו להזמין
+                עיסוי או
+                לשחות בבריכה.
+
+                המלון הוא ללא עישון. הוא נמצא במרחק של 5 דקות הליכה ממרכז הקניות La Vallée, כ-10 דקות נסיעה
+                מתחנת
+                רכבת ה-RER, וכשלושה ק"מ ממועדון הגולף דיסנילנד. שדה התעופה שארל דה גול (Charles de Gaulle
+                Airport)
+                נמצא במרחק של 30 דקות נסיעה, וניתן גם להזמין שירות הסעות ללא תשלום לדיסנילנד פריז.</p>
+        </div>
+        <div class="ContentHead d-flex flex-row">
+            <div class="p2">
+                <p>price:500$</p>
+                <p>readily available
+                    Not available</p>
+            </div>
+            <div class="p2 btnRoom">
+                <button type="submit" class="roomOrder btn btn-success">order</button>
+            </div>
+            
+        </div>
+
+    </div>
+
+</div>
+
+                    `)
+
+}

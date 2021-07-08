@@ -65,3 +65,38 @@ input {
     transform: rotate(360deg);
   }
 }
+.HotelDetails {
+  border: 1px solid black;
+  height: 500px;
+  width: 100%;
+}
+.poto {
+  width: 200%;
+  margin-right: 10px;
+}
+.hotelImg {
+  height: 100%;
+  width: 100%;
+}
+.bodyOfContent{
+  height: 25%;
+}
+.checked {
+  color: gold;
+}
+span {
+  content: "\2B50";
+}
+.roomOrder {
+  height: 40px;
+  width: 120px;
+}
+.ContentHead {
+  position: relative;
+  height: 25%;
+}
+.btnRoom {
+  position: absolute;
+  right: 10px ;
+  bottom: 10px;
+}
