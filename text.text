@@ -1,0 +1,11 @@
+
+// 1. Loading the cites list from json file.
+// 3. Extract only the necessary data from the api response.
+// 4. Move any mock data to a json file and load the the from the file.
+// 5. Organize the code in a logical order, by the flow of the app or user actions
+// 6. Naming conventions - Give and function or variable the current name.
+
+// 2. Saving API keys in variables.
+
+// 7. Fix ALL - syntax ERROR !!!!!!!
+// j
