@@ -16,6 +16,7 @@ function start() {
     setMinimumTime('checkIn', new Date());
     validationMinimumRange();
     addEvent();
+    validaProperform()
     
 }
 
@@ -211,28 +212,39 @@ function imgs(type) {
 
 
 
-function getTokons2() {
-    $.get({
-        method: "post",
-        url: 'https://test.api.amadeus.com/v1/security/oauth2/token',
-        headers: { "Authorization: Bearer B1uK7IaUyN44sFc2xm8oYUvPFcJa" },
-        data: "Authorization: Bearer fZOO7SZ6YZkuGjFxgNeUrRD2VQjx",
-        success: function (result) {
-            if (result) {
-                console.log(result);
-            }
+// function getTokons2() {
+//     $.get({
+//         method: "post",
+//         url: 'https://test.api.amadeus.com/v1/security/oauth2/token',
+//         headers: { "Authorization: Bearer B1uK7IaUyN44sFc2xm8oYUvPFcJa" },
+//         data: "Authorization: Bearer fZOO7SZ6YZkuGjFxgNeUrRD2VQjx",
+//         success: function (result) {
+//             if (result) {
+//                 console.log(result);
+//             }
+//         }
+//     });
+
+// }
+
+
+function validaProperform() {
+    ELMENT.$FROM_EL.on('change', function (event) {
+        // const form = event.target
+        let data = {
+             checkIn : event.target.checkIn.value,
+             checkOut : event.target.checkOut.value,
         }
-    });
-
+            
+        console.log(data.checkIn);
+        
+        console.log(data.checkOut);
+        if (data) {
+            // changeButActive()
+            console.log('yesss');
+        }
+    })
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -245,21 +257,7 @@ function CreataOrder() {
 
 $(".roadelSurface").hide();
 
-// function validaProperform() {
-//     ELMENT.$FROM_EL.on('change', function (event) {
-//         // const form = event.target
-//         const checkIn = event.target.checkIn.value
-//         const city = event.target.city.value
-//         const checkOut = event.target.checkOut.value
-//         console.log(checkIn);
-//         console.log(city);
-//         console.log(checkOut);
-//         if (city || checkIn || checkOut) {
-//             // changeButActive()
-//             console.log('yesss');
-//         }
-//     })
-// }
+
 
 
 
