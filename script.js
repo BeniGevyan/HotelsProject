@@ -17,12 +17,12 @@ function start() {
     validationMinimumRange();
     addEvent();
     validaProperform()
-    
+
 }
 
 function getJsonFeil() {
     $.getJSON("test.json", function (data) {
-        Object.entries(data ).forEach(n => cretListCitys(n));
+        Object.entries(data).forEach(n => cretListCitys(n));
     }).fail(function () {
         console.log("An error has occurred.");
     });
@@ -96,14 +96,15 @@ function creatingHotels(hotel) {
                     ${hotel.offers[0].room.description.text}</p>
             </div>
             <div class="p2 btnRoom">
-                <button typ-e="submit" class="roomOrder btn btn-success">order</button>
+                <button type="submit" id="myBtn" class="roomOrder btn btn-success">order</button>
             </div>
 
         </div>
 
     </div>
 
-</div>    ` )}
+</div>    ` )
+}
 
 function creatStars(nmuber) {
     const stars = `<span>&#11088;</span>`
@@ -129,7 +130,7 @@ function addEvent() {
             checkIn: form.checkIn.value,
             checkOut: form.checkOut.value,
         }
-        
+
         form.reset();
         $(".roadelSurface").show();
         CreatingHotel(malon);
@@ -208,9 +209,25 @@ function imgs(type) {
 
 
 
-// ------------ ניסוים------------
+const modal = document.getElementById("myModal");
 
+const btn = document.getElementById("myBtn");
 
+const span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function () {
+    modal.style.display = "block";
+}
+
+span.onclick = function () {
+    modal.style.display = "none";
+}
+
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
 
 // function getTokons2() {
 //     $.get({
@@ -221,6 +238,8 @@ function imgs(type) {
 //         success: function (result) {
 //             if (result) {
 //                 console.log(result);
+//                 $(".roadelSurface").hide;
+
 //             }
 //         }
 //     });
@@ -232,12 +251,11 @@ function validaProperform() {
     ELMENT.$FROM_EL.on('change', function (event) {
         // const form = event.target
         let data = {
-             checkIn : event.target.checkIn.value,
-             checkOut : event.target.checkOut.value,
+            checkIn: event.target.checkIn.value,
+            checkOut: event.target.checkOut.value,
         }
-            
+
         console.log(data.checkIn);
-        
         console.log(data.checkOut);
         if (data) {
             // changeButActive()
@@ -252,7 +270,7 @@ function validaProperform() {
 
 // ---------------- פונקציות לא גמורות -------------
 function CreataOrder() {
-    
+
 }
 
 $(".roadelSurface").hide();
