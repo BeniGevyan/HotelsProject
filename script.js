@@ -311,6 +311,7 @@ function getHotelsJsonFile() {
     }).fail(function () {
         console.log("An error has occurred.");
     });
+    
    
 }
 
