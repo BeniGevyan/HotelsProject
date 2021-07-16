@@ -1,6 +1,7 @@
-const ELMENT = {
+const ELEMENTS = {
     $FROM_EL: $('#orderForm'),
-    $DIV_CONTENER: $('#result'),
+    $DIV_CONTAINER: $('#result'),
+    $ORDER: $('#contact_form'),
 }
 
 const order = [];
@@ -12,17 +13,18 @@ start();
 //#region Initial Loading Methods
 
 function start() {
-    getJsonFeil()
+    
+    getJsonFile()
     setMinimumTime('checkIn', new Date());
     validationMinimumRange();
     addEvent();
-    validaProperform()
+    // validateProprietyForm()
 
 }
 
-function getJsonFeil() {
+function getJsonFile() {
     $.getJSON("test.json", function (data) {
-        Object.entries(data).forEach(n => cretListCitys(n));
+        Object.entries(data).forEach(n => creteListCitys(n));
     }).fail(function () {
         console.log("An error has occurred.");
     });
@@ -60,7 +62,7 @@ function validationMinimumRange() {
 
 //#region  CRUD (Create, Read, Update, Delete) Methods
 
-function cretListCitys(params) {
+function creteListCitys(params) {
     $('#city').append(
         `
         <option value="${params[1]}">${params[0]}</option>
@@ -68,48 +70,51 @@ function cretListCitys(params) {
 }
 
 function creatingHotels(hotel) {
-
-    ELMENT.$DIV_CONTENER.append(`
+ console.log(hotel);
+    ELEMENTS.$DIV_CONTAINER.append(`
      
     <div class="HotelDetails d-flex flex-row">
-    <div class="poto p2">
+    <div class="foto p2">
         <img src=${imgs('hotel')} alt="" class="hotelImg">
     </div>
     <div class="text p2">
 
         <div class="bodyOfContent">
-            <h1>${hotel.hotel.hotelId}</h1>
+            <h1>${hotel.nema}</h1>
             <div>
-            ${creatStars(hotel.hotel.rating)}
+            ${creatStars(hotel.rating)}
             </div>
                   
         </div>
 
         <div class="endOfContent">
-            <p>${hotel.hotel.description.text}</p>
+            <p>${hotel.description_hotel}</p>
         </div>
         <div class="ContentHead d-flex flex-row">
             <div class="p2">
-                <p>${hotel.offers[0].price.currency},${hotel.offers[0].price.total}</p>
+                <p>${hotel.price1},${hotel.price2}</p>
                 <p>readily available
                     Not available
-                    ${hotel.offers[0].room.description.text}</p>
+                    ${hotel.description_room}</p>
             </div>
             <div class="p2 btnRoom">
-                <button type="submit" id="myBtn" class="roomOrder btn btn-success">order</button>
+                <button type="submit" class="roomOrder btn btn-success" onclick = CreatOrder()>order</button>
+              
+
             </div>
 
         </div>
 
     </div>
 
-</div>    ` )
+</div>    ` ) 
+    // אולי צריך להחזיר לכפתור את (id="myBtn")
 }
 
-function creatStars(nmuber) {
+function creatStars(number) {
     const stars = `<span>&#11088;</span>`
     let allStar = ``
-    for (let i = 0; i <= nmuber; i++) {
+    for (let i = 0; i <= number; i++) {
         allStar += stars;
     }
     return allStar;
@@ -121,19 +126,19 @@ function creatStars(nmuber) {
 //#region DOM Manipulation Methods
 
 function addEvent() {
-    ELMENT.$FROM_EL.on("submit", function (event) {
+    ELEMENTS.$FROM_EL.on("submit", function (event) {
         event.preventDefault();
-        getTokons();
+        $(".roaderSurface").css("display", "block");
+        getTokens();
         const form = event.target
         const data = {
             city: form.city.value,
             checkIn: form.checkIn.value,
             checkOut: form.checkOut.value,
         }
-
+        getHotelsJsonFile()
         form.reset();
-        $(".roadelSurface").show();
-        CreatingHotel(malon);
+
         console.log(data);
     });
 }
@@ -180,7 +185,7 @@ function padLeadingZero(number) {
 
 //#region External readings
 
-function getTokons() {
+function getTokens() {
     $.get({
         method: "post",
         url: 'https://test.api.amadeus.com/v1/security/oauth2/token',
@@ -215,21 +220,11 @@ const btn = document.getElementById("myBtn");
 
 const span = document.getElementsByClassName("close")[0];
 
-btn.onclick = function () {
-    modal.style.display = "block";
-}
 
-span.onclick = function () {
-    modal.style.display = "none";
-}
 
-window.onclick = function (event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
 
-// function getTokons2() {
+
+// function getTokens2() {
 //     $.get({
 //         method: "post",
 //         url: 'https://test.api.amadeus.com/v1/security/oauth2/token',
@@ -238,7 +233,7 @@ window.onclick = function (event) {
 //         success: function (result) {
 //             if (result) {
 //                 console.log(result);
-//                 $(".roadelSurface").hide;
+//                 $(".roaderSurface").hide;
 
 //             }
 //         }
@@ -247,35 +242,92 @@ window.onclick = function (event) {
 // }
 
 
-function validaProperform() {
-    ELMENT.$FROM_EL.on('change', function (event) {
-        // const form = event.target
-        let data = {
-            checkIn: event.target.checkIn.value,
-            checkOut: event.target.checkOut.value,
-        }
+// function validateProprietyForm() {
+//     ELEMENTS.$FROM_EL.on('change', function (event) {
+//         // const form = event.target
+//         let data = {
+//             checkIn: event.target.checkIn.value,
+//             checkOut: event.target.checkOut.value,
+//         }
 
-        console.log(data.checkIn);
-        console.log(data.checkOut);
-        if (data) {
-            // changeButActive()
-            console.log('yesss');
-        }
-    })
-}
-
+//         console.log(data.checkIn);
+//         console.log(data.checkOut);
+//         if (data) {
+//             // changeButActive()
+//             console.log('yesss');
+//         }
+//     })
+// }
 
 
 
 
 // ---------------- פונקציות לא גמורות -------------
-function CreataOrder() {
+function CreatOrder(x) {
+    modal.style.display = "block";
+    ELEMENTS.$ORDER.on("submit", function (event) {
+        event.preventDefault();
+        const form = event.target
+        const data = {
+
+        }
+
+
+    });
+
+
+
+
+    span.onclick = function () {
+        modal.style.display = "none";
+        saveToLocalStorage(key, value)
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+            saveToLocalStorage(key, value)
+        }
+    }
+
 
 }
 
-$(".roadelSurface").hide();
+function saveToLocalStorage(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
 
 
+
+const HOTELS = []
+
+function getHotelsJsonFile() {
+
+
+    $.getJSON("hotel.json", function (hotels) {
+        Object.entries(hotels.data).forEach(n => hotelObjet(n));
+        HOTELS.forEach(creatingHotels);
+        $(".roaderSurface").css("display", "none");
+    }).fail(function () {
+        console.log("An error has occurred.");
+    });
+   
+}
+
+
+function hotelObjet(hotel) {
+
+    const hotels = {
+        'nema': hotel[1].hotel.hotelId,
+        'rating':  hotel[1].hotel.rating,
+        'description_hotel':  hotel[1].hotel.description.text,
+        'price1': hotel[1].offers[0].price.currency,
+        'price2': hotel[1].offers[0].price.total,
+        'description_room': hotel[1].offers[0].room.description.text 
+    }
+    HOTELS.push(hotels);
+
+}
 
 
 

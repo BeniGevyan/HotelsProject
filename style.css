@@ -150,18 +150,25 @@ body {
   height: 90%;
   width: 80%;
 }
-legend{
+.roaderSurface {
+  display: none;
+}
+
+.endOfContent {
+  height: 50%;
+}
+legend {
   text-align: center;
 }
-fieldset{
+fieldset {
   margin: auto;
 }
-.inpuotCustomer{
+.inpuotCustomer {
   width: 100%;
 }
-.inpoutFrom{
-text-align: center;
+.inpoutFrom {
+  text-align: center;
 }
-.btnFrom{
-margin: auto;
+.btnFrom {
+  margin: auto;
 }
