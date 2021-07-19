@@ -66,13 +66,14 @@ input {
   }
 }
 .HotelDetails {
+  margin-bottom: 15px;
   border: 1px solid black;
   height: 500px;
   width: 100%;
 }
-.poto {
+.foto {
+  height: 100%;
   width: 50%;
-  margin-right: 10px;
 }
 .hotelImg {
   height: 100%;
@@ -81,9 +82,10 @@ input {
 .text {
   width: 100%;
   height: 100%;
+  margin-left: 10px;
 }
 .bodyOfContent {
-  height: 25%;
+  height: 20%;
 }
 .checked {
   color: gold;
@@ -102,7 +104,7 @@ span {
 .btnRoom {
   position: absolute;
   right: 10px;
-  bottom: 10px;
+  bottom: 0px;
 }
 
 body {
@@ -156,6 +158,8 @@ body {
 
 .endOfContent {
   height: 50%;
+  overflow: auto;
+  margin: 8px 0px;
 }
 legend {
   text-align: center;
@@ -171,4 +175,7 @@ fieldset {
 }
 .btnFrom {
   margin: auto;
+}
+p {
+  margin: 0;
 }

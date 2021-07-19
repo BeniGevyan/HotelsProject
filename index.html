@@ -20,35 +20,36 @@
         <div>
             <form id="orderForm" class="orderForm d-flex justify-content-around">
                 <div class="city p-2 d-flex flex-column ">
-                    <label class="p2">Select a city</label>
+                    <label class="p2" for="city">City</label>
                     <select class="p2" name="city" id="city" required>
                         <option selected></option>
                     </select>
                 </div>
-                <div class="checkIn p-2 ">
-                    <label>Select a date to check in</label>
+                <div class="checkIn p-2">
+                    <label for="checkIn">Check-in Date</label>
                     <input type="date" name="checkIn" required id="checkIn">
                 </div>
-                <div class="checkOut p-2 ">
-                    <label>Select a date to check out</label>
+                <div class="checkOut p-2">
+                    <label for="checkOut">Check-out Date</label>
                     <input type="date" name="checkOut" required id="checkOut" disabled>
                 </div>
-                <div class=" btuDiv p-2  ">
-                    <button type="submit" class="btn btn-secondary"> send</button>
+                <div class="btuDiv p-2">
+                    <button type="submit" class="btn btn-secondary">Find Hotels</button>
                 </div>
+
             </form>
         </div>
+        <div class="roaderSurface">
+            <div class="loader" id="loader"></div>
+        </div>
+        
         <div id="result" class="result">
-            <div class="roaderSurface">
-                <div class="loader" id="loader"></div>
-            </div>
 
         </div>
 
     </div>
 
-
-    <button id="myBtn">Open Modal</button>
+    <button id="myBtn" onclick = CreatOrder()>Open Modal</button>
 
     <div id="myModal" class="modal">
 
@@ -109,13 +110,16 @@
                 </form>
             </div>
             <div class="p2">
-                <span class="close">&times;</span>
+                <button type="button" class="close">&times;</button>
             </div>
 
         </div>
 
     </div>
-    
+
+
+
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
