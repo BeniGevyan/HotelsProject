@@ -383,11 +383,15 @@ btn.on('click', () => {
 
 })
 
+
 $(window).on('click', function (event) {
-    if (event.target == modal) {
+    const targetE = event.target
+
+    if (targetE != ' div#myModal.modal') {
+
         modal.css('display', "none");
 
-        saveToLocalStorage(key, value)
+        saveCustomerDetailsToLocal()
     }
 })
 

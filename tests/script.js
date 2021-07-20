@@ -368,14 +368,16 @@ btn.on('click', () => {
 
 })
 
-// $(window).on('click', function (event) {
-//     if (event.target != modal) {
-//         console.log('yesss');
-//         modal.css('display', "none");
+$(window).on('click', function (event) {
+    const targetE = event.target
 
-//         saveToLocalStorage(key, value)
-//     }
-// })
+    if (targetE != ' div#myModal.modal') {
+
+        modal.css('display', "none");
+
+        saveCustomerDetailsToLocal()
+    }
+})
 
 
 
@@ -408,7 +410,7 @@ function saveCustomerDetailsToLocal() {
     }
     for (let [key, value] of Object.entries(customerDetails)) {
         saveToLocalStorage(key, value)
-      }
+    }
 }
 
 function orderViewCompleted(Country, orderNem) {
@@ -428,16 +430,10 @@ function orderViewCompleted(Country, orderNem) {
 </p>`)
 
 }
-populateStorage()
-function populateStorage() {
-    localStorage.setItem('bgcolor',JSON.stringify(ELEMENTS));
-    localStorage.setItem('font', 'Helvetica');
-    localStorage.setItem('image', 'myCat.png');
-}
 
 function saveToLocalStorage(key, value) {
 
-    localStorage.setItem(key,JSON.stringify(value));
+    localStorage.setItem(key, JSON.stringify(value));
 }
 
 
