@@ -7,14 +7,12 @@ const API_Keys = {
     "client_id": '6NvSjIcGLPFLt7eW4IGHmdJuV2AUfY8O',
     "client_secret": 'AI5zIvWHnSvdXBcO'
 };
-const orderHistory = []
-
-let offerId = '';
 
 const ELEMENTS = {
     $FROM_EL: $('#orderForm'),
     $DIV_CONTAINER: $('#result'),
     $ORDER: $('#contact_form'),
+    $SPINNER: $('#spinner'),
 }
 let HOTELS = []
 const order = [];
@@ -26,13 +24,11 @@ start();
 //#region Initial Loading Methods
 
 function start() {
-    // addevent()
     getAccessToken();
     getJsonFile()
     setMinimumTime('checkIn', new Date());
     validationMinimumRange();
     addEvent();
-    // validateProprietyForm()
 
 }
 
@@ -71,6 +67,50 @@ function validationMinimumRange() {
 
 }
 
+
+function hotelObjet(hotel) {
+
+    let description = ''
+    if (hotel[1].hotel.description) {
+        description = hotel[1].hotel.description.text
+    } else {
+        description = 'No description of selected hotel';
+    }
+
+    const hotels = {
+        'nema': hotel[1].hotel.hotelId,
+        'city': hotel[1].hotel.address.cityName,
+        'address': hotel[1].hotel.address.lines[0],
+        'rating': hotel[1].hotel.rating,
+        'description_hotel': description,
+        'price1': hotel[1].offers[0].price.currency,
+        'price2': hotel[1].offers[0].price.total,
+        'Default': Default(hotel[1].offers[0]),
+        'options': options(hotel[1].offers[0].price.variations.changes),
+        'description_room': hotel[1].offers[0].room.description.text,
+        'offerId': hotel[1].offers[0].id,
+        "checkInDate": hotel[1].offers[0].checkInDate,
+        "checkOutDate": hotel[1].offers[0].checkOutDate,
+    }
+    HOTELS.push(hotels);
+
+}
+
+function Default(params) {
+    return `<option value="" selected >startDate: "${params.checkInDate}", endDate: "${params.checkOutDate}", total: "${params.price.total}"</option>`
+}
+
+function options(option) {
+    let rooms = '';
+    if (option.length > 1) {
+        for (let i = 0; i < option.length; i++) {
+            rooms += `<option value="">startDate: "${option[i].startDate}", endDate: "${option[i].endDate}", total: "${option[i].total}"</option>`
+        }
+    } else {
+        rooms = `<option value="">startDate: "${option[0].startDate}", endDate: "${option[0].endDate}", total: "${option[0].total}"</option>`;
+    }
+    return rooms
+}
 //#endregion Validation Methods
 
 
@@ -84,16 +124,11 @@ function creteListCitys(params) {
 }
 
 function creatingHotels(hotel) {
-    // const hotelImage = hotelImage; //imgs('hotel');
-    // const hotelImage = 'https://images.unsplash.com/photo-1513694203232-719a280e022f?ixid=MnwyNDYyMTN8MHwxfHNlYXJjaHwxfHxyb29tfGVufDB8fHx8MTYyNjY0MTI4Mw&ixlib=rb-1.2.1'
-
 
     ELEMENTS.$DIV_CONTAINER.append(`
-     
-
   <div class="HotelDetails d-flex flex-row">
   <div class="foto p2">
-    <img src="assets/images/237729537.jpg" alt="" class="hotelImg">
+    <img src="${ImagesApiBaseUrl}g" alt="" class="hotelImg">
   </div>
   <div class="text p2">
 
@@ -129,9 +164,7 @@ function creatingHotels(hotel) {
           </select>
         </div>
         <div class="btnRoom p2">
-          
-          <button type="submit" class="roomOrder btn btn-success"
-           onclick=CreatOrder(  )>order</button>
+          <button type="submit" class="roomOrder btn btn-success" onclick=CreatOrder()>order</button>
         </div>
       </div>
 
@@ -141,8 +174,6 @@ function creatingHotels(hotel) {
 
 </div>
 ` )
-
-
 }
 
 function creatStars(number) {
@@ -183,18 +214,23 @@ function setMinimumTime(id, date) {
     $(`#${id}`).attr("min", changeDateFormat(date))
 }
 
-function changeButActive() {
-    $('.btn').removeAttr('disabled');
-    $('.btn').removeClass('btn-secondary');
-    $('.btn').addClass('btn-primary');
-
-}
-
 function CreatingHotel(hotel) {
     hotel.data.forEach(creatingHotels);
 }
 
 //#endregion DOM Manipulation Methods
+
+//#region Displaying spinner
+
+function showSpinner() {
+    ELEMENTS.$SPINNER.addClass("show");
+}
+
+function hideSpinner() {
+    ELEMENTS.$SPINNER.removeClass("show");
+}
+
+//#endregion
 
 
 //#region Logical  Methods
@@ -245,11 +281,9 @@ function getAccessToken() {
         data: joinObjectKeysAndValues(API_Keys),
         success: (result) => {
             if (result) {
-                // console.log(result);
                 const {
                     access_token, expires_in
                 } = result;
-                // console.log({ access_token, expires_in });
                 setApiBearer(access_token);
             }
         }
@@ -260,18 +294,11 @@ function imgs(type) {
     const url = `https://api.unsplash.com/search/photos/?query=${type}&page=1&per_page=1&client_id=fxxTEmUpHWL_AY16kZr7CDmk7YQvpZ0hmgnF6kl13Kk`;
     var imgUrl;
     $.get(url, (data) => {
-        // console.log(data);
         if (data) {
             imgUrl = data.results[0].urls.full;
-            // console.log(imgUrl);
             return imgUrl;
         }
     });
-}
-function closLoadr() {
-
-    $("#loaderModal").css("display", "none");
-    $(".roaderSurface").css("display", "none");
 }
 
 function findHotelsOffers(cityCode, checkInDate, checkOutDate) {
@@ -280,8 +307,7 @@ function findHotelsOffers(cityCode, checkInDate, checkOutDate) {
         checkInDate,
         checkOutDate,
     };
-    const errorNumber = 0;
-    // console.log(`${HotelApiBaseUrl}/v2/shopping/hotel-offers?${joinObjectKeysAndValues(reqParams)}`);
+    showSpinner();
     $.get({
         method: "GET",
         url: `${HotelApiBaseUrl}/v2/shopping/hotel-offers?${joinObjectKeysAndValues(reqParams)}`,
@@ -289,104 +315,95 @@ function findHotelsOffers(cityCode, checkInDate, checkOutDate) {
             'Authorization': `Bearer ${getApiBearer()}`
         },
         success: (result) => {
-            closLoadr()
+            Object.entries(result.data).forEach(n => hotelObjet(n));
+            HOTELS.forEach(creatingHotels);
             if (result.data.length === 0) {
-                errorNumber = 1
-            } else {
-                Object.entries(result.data).forEach(n => hotelObjet(n));
-                HOTELS.forEach(creatingHotels);
+                alert(`No quotes found for dates ${reqParams.checkInDate} ,${reqParams.checkOutDate}  goddess`)
             }
+            // $("#loaderModal").css("display", "none");
+            // $(".roaderSurface").css("display", "none");
+
+            hideSpinner();
         },
-        error: () => {
-            errorNumber = 2
+        error: (errorThrown) => {
+            console.log(errorThrown);
 
-        },
-        complete: () => {
+            // $("#loaderModal").css("display", "none");
+            // $(".roaderSurface").css("display", "none");
 
-            if (errorNumber === 1) {
+            hideSpinner();
+        }
 
-            }
-
-            if (errorNumber === 2) {
-
-            }
-        },
     });
 }
+
+function sendHotelBooking(offerId) {
+    console.log(offerId)
+
+    var request = getBookingReqParams(offerId);
+    console.log(request);
+    showSpinner();
+
+    $.post({
+        method: "POST",
+        url: `${HotelApiBaseUrl}/v1/booking/hotel-bookings`,
+        data: JSON.stringify(request),
+        headers: {
+            'Authorization': `Bearer ${getApiBearer()}`
+        },
+        contentType: 'application/json',
+        success: (result) => {
+            console.log(result);
+            const { id, type } = result.data[0];
+            if (id && type) {
+                orderViewCompleted(id, type)
+            }
+            //  $("#loaderModal").css("display", "none");
+            //  $(".roaderSurface").css("display", "none");
+            hideSpinner();
+        },
+        error: (errorThrown) => {
+            console.log(errorThrown);
+            //  $("#loaderModal").css("display", "none");
+            //  $(".roaderSurface").css("display", "none");
+            hideSpinner();
+        }
+
+    });
+
+}
+
+function getBookingReqParams(offerId) {
+    var request = {
+        "data": {
+            offerId,
+            "guests": [{
+                "name": {
+                    "title": "MR",
+                    "firstName": "BOB",
+                    "lastName": "SMITH"
+                },
+                "contact": {
+                    "phone": "+33679278416",
+                    "email": "bob.smith@email.com"
+                }
+            }],
+            "payments": [{
+                "method": "creditCard",
+                "card": {
+                    "vendorCode": "VI",
+                    "cardNumber": "4111111111111111",
+                    "expiryDate": "2023-01"
+                }
+            }]
+        }
+    };
+    return request;
+}
+
 
 //#endregion
 
-
-
-
-// function validateProprietyForm() {
-//     ELEMENTS.$FROM_EL.on('change', function (event) {
-//         // const form = event.target
-//         let data = {
-//             checkIn: event.target.checkIn.value,
-//             checkOut: event.target.checkOut.value,
-//         }
-
-//         console.log(data.checkIn);
-//         console.log(data.checkOut);
-//         if (data) {
-//             // changeButActive()
-//             console.log('yesss');
-//         }
-//     })
-// }
-
-
-
-
-// ---------------- פונקציות לא גמורות -------------
-
-
-const modal = $("#myModal");
-
-const btn = $(".close");
-
-
-function CreatOrder() {
-    modal.css('display', "block")
-    loadAllLocalStorageItems()
-    ELEMENTS.$ORDER.on("submit", function (event) {
-        event.preventDefault();
-        const form = event.target
-        const data = {
-
-        }
-
-
-    });
-}
-
-btn.on('click', () => {
-    modal.css('display', "none");
-
-    saveCustomerDetailsToLocal()
-
-})
-
-$(window).on('click', function (event) {
-    const targetE = event.target
-
-    if (targetE != ' div#myModal.modal') {
-
-        modal.css('display', "none");
-
-        saveCustomerDetailsToLocal()
-    }
-})
-
-
-
-// window.onclick = function (event) {
-//     if (event.target == modal) {
-//         modal.style.display = "none";
-//         saveToLocalStorage(key, value)
-//     }
-// }
 function loadAllLocalStorageItems() {
 
     for (let i = 0; i < localStorage.length; i++) {
@@ -413,6 +430,8 @@ function saveCustomerDetailsToLocal() {
     }
 }
 
+
+
 function orderViewCompleted(Country, orderNem) {
     const order = {
         'Country': Country,
@@ -432,145 +451,45 @@ function orderViewCompleted(Country, orderNem) {
 }
 
 function saveToLocalStorage(key, value) {
-
     localStorage.setItem(key, JSON.stringify(value));
 }
 
 
+$('#inpuotCustomer').on('submit', (event) => {
+    const offerId = 'FRYOXBW3GL';
+    sendHotelBooking(offerId);
 
-// function getHotelsJsonFile() {
+})
 
+const modal = $("#myModal");
 
-//     $.getJSON("./assets/jsons/hotel.json", function (hotels) {
-
-//     }).fail(function () {
-//         console.log("An error has occurred.");
-//     });
-
-
-// }
+const btn = $(".close");
 
 
-function hotelObjet(hotel) {
-
-    let description = ''
-    if (hotel[1].hotel.description) {
-        description = hotel[1].hotel.description.text
-    } else {
-        description = 'No description of selected hotel';
-    }
-
-    const hotels = {
-        'nema': hotel[1].hotel.hotelId,
-        'city': hotel[1].hotel.address.cityName,
-        'address': hotel[1].hotel.address.lines[0],
-        'rating': hotel[1].hotel.rating,
-        'description_hotel': description,
-        'price1': hotel[1].offers[0].price.currency,
-        'price2': hotel[1].offers[0].price.total,
-        'Default': Default(hotel[1].offers[0]),
-        'options': options(hotel[1].offers[0].price.variations.changes),
-        'description_room': hotel[1].offers[0].room.description.text,
-        'code': hotel[1].offers[0].id,
-        "checkInDate": hotel[1].offers[0].checkInDate,
-        "checkOutDate": hotel[1].offers[0].checkOutDate,
-    }
-    HOTELS.push(hotels);
-
+function CreatOrder(x) {
+    modal.css('display', "block")
+    loadAllLocalStorageItems()
 }
-function Default(params) {
-    return `<option value="" selected >startDate: "${params.checkInDate}", endDate: "${params.checkOutDate}", total: "${params.price.total}"</option>`
-}
-function options(option) {
-    let rooms = '';
-    if (option.length > 1) {
-        for (let i = 0; i < option.length; i++) {
-            rooms += `<option value="">startDate: "${option[i].startDate}", endDate: "${option[i].endDate}", total: "${option[i].total}"</option>`
-        }
-    } else {
-        rooms = `<option value="">startDate: "${option[0].startDate}", endDate: "${option[0].endDate}", total: "${option[0].total}"</option>`;
-    }
-    return rooms
-}
+btn.on('click', () => {
+    modal.css('display', "none");
 
-// // ---------------------------/
+    saveCustomerDetailsToLocal()
+
+})
 
 
+// $(window).on('click', function (event) {
+//     const targetE = event.target
 
-// function addevent() {
-//     $('#formcontainer').on("submit", function (event) {
-//         console.log('1111111');
+//     if (targetE != ' div#myModal.modal') {
 
-//         event.preventDefault();
-//         const form = event.target
-//         const data = {
-//             first_name: form.first_name.value,
-//             last_name: form.last_name.value,
-//             email: form.email.value,
-//             contact_no: form.contact_no.value,
-//         }
-//         validData(data)
+//         modal.css('display', "none");
 
-//     });
-// }
-
-// function validData(data) {
-//     if (ValidaName(data.first_name) && ValidaName(data.last_name) && ValidateEmail(data.email) && phonenumber(data.contact_no)) {
-//         $('#formcontainer').addClass('was-validated')
-
+//         saveCustomerDetailsToLocal()
 //     }
-
-// }
-// function ValidaName(name) {
-//     const clinSpace = name.trim();
-//     if (!clinSpace) {
-//         return false;
-//     } else {
-
-//         return true;
-//     }
-
-// }
-
-// function ValidateEmail(mail) {
-//     if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail.value)) {
-//         return (true)
-//     } else {
-
-//         return false;
-//     }
-
-
-// }
-// function phonenumber(inputphon) {
-//     const phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-//     if ((inputphon.value.match(phone))) {
-//         return true;
-//     } else {
-
-//         return false;
-//     }
-// }
+// })
 
 
 
-// $.post({
-//     method: "POST",
-//     url: `${HotelApiBaseUrl}/v2/shopping/hotel-offers?${joinObjectKeysAndValues(reqParams)}`,
-//     headers: {
-//         'Authorization': `Bearer ${getApiBearer()}`
-//     }
 
 
-//     ,
-//     complete: () => {
-
-//     },
-//     success: (result) => {
-
-//     },
-//     error: () => {
-
-//     },
-
-// });
