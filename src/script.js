@@ -195,8 +195,7 @@ function addEvent() {
         HOTELS = []
         ELEMENTS.$DIV_CONTAINER.empty();
         event.preventDefault();
-        $("#loaderModal").css("display", "block");
-        $(".roaderSurface").css("display", "block");
+
         const form = event.target
         const data = {
             city: form.city.value,
@@ -342,7 +341,6 @@ function sendHotelBooking(offerId) {
 
     var request = getBookingReqParams(offerId);
     console.log(request);
-    showSpinner();
 
     $.post({
         method: "POST",
@@ -405,11 +403,13 @@ function getBookingReqParams(offerId) {
 //#endregion
 
 function loadAllLocalStorageItems() {
+    if (localStorage.length > 0) {
 
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        const value = JSON.parse(localStorage.getItem(key));
-        $(`#${key}`).text(`${value}`);
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            const value = JSON.parse(localStorage.getItem(key));
+            $(`#${key}`).text(`${value}`);
+        }
     }
 };
 
@@ -458,6 +458,8 @@ function saveToLocalStorage(key, value) {
 $('#inpuotCustomer').on('submit', (event) => {
     const offerId = 'FRYOXBW3GL';
     sendHotelBooking(offerId);
+    showSpinner();
+    
 
 })
 
