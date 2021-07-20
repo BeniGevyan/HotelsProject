@@ -314,7 +314,55 @@ function findHotelsOffers(cityCode, checkInDate, checkOutDate) {
 
 //#endregion
 
+function loadAllLocalStorageItems() {
 
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = JSON.parse(localStorage.getItem(key));
+        $(`#${key}`).text(`${value}`);
+    }
+};
+
+function saveCustomerDetailsToLocal() {
+    const first_name = $('#first_name').val()
+    const last_name = $('#last_name').val()
+    const email = $('#email').val()
+    const contact_no = $('#contact_no').val()
+
+    let customerDetails = {
+        ' first_name': first_name,
+        'last_name': last_name,
+        'email': email,
+        'contact_no': contact_no
+    }
+    for (let [key, value] of Object.entries(customerDetails)) {
+        saveToLocalStorage(key, value)
+    }
+}
+
+
+
+function orderViewCompleted(Country, orderNem) {
+    const order = {
+        'Country': Country,
+        'orderNem': orderNem
+    }
+    orderHistory.push(order)
+
+    ELEMENTS.$DIV_CONTAINER.empty();
+    saveToLocalStorage(Country, orderNem)
+    ELEMENTS.$DIV_CONTAINER.append(`
+
+    <div class="orderViewCompleted">
+<p class="order">
+    We are pleased to announce that the order has been successfully completed, the order number is ${orderNem}
+</p>`)
+
+}
+
+function saveToLocalStorage(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
 
 // ---------------- פונקציות לא גמורות -------------
 
@@ -326,11 +374,12 @@ const btn = $(".close");
 
 function CreatOrder(x) {
     modal.css('display', "block")
+    loadAllLocalStorageItems()
 }
 btn.on('click', () => {
     modal.css('display', "none");
 
-    saveToLocalStorage(key, value);
+    saveCustomerDetailsToLocal()
 
 })
 

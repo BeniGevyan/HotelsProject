@@ -191,3 +191,15 @@ fieldset {
 p {
   margin: 0;
 }
+
+.orderViewCompleted{
+  margin: auto auto;
+  height: 100%;
+  width: 50%;
+border: green;
+background-color: rgb(43, 255, 6)
+}
+.order{
+  text-align: center;
+  color: black;
+}

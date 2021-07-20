@@ -1,12 +1,15 @@
 const Authorization_Url = "https://test.api.amadeus.com/v1/security/oauth2/token";
 const HotelApiBaseUrl = "https://test.api.amadeus.com";
-const bookingsUrl ='https://test.api.amadeus.com/v1/booking/hotel-bookings'
+const bookingsUrl = 'https://test.api.amadeus.com/v1/booking/hotel-bookings'
 const ImagesApiBaseUrl = "https://source.unsplash.com/800x450/?hotel&id=";
 const API_Keys = {
     "grant_type": 'client_credentials',
     "client_id": '6NvSjIcGLPFLt7eW4IGHmdJuV2AUfY8O',
     "client_secret": 'AI5zIvWHnSvdXBcO'
 };
+const orderHistory = []
+
+let offerId = '';
 
 const ELEMENTS = {
     $FROM_EL: $('#orderForm'),
@@ -126,7 +129,9 @@ function creatingHotels(hotel) {
           </select>
         </div>
         <div class="btnRoom p2">
-          <button type="submit" class="roomOrder btn btn-success" onclick=CreatOrder()>order</button>
+          
+          <button type="submit" class="roomOrder btn btn-success"
+           onclick=CreatOrder(  )>order</button>
         </div>
       </div>
 
@@ -136,7 +141,8 @@ function creatingHotels(hotel) {
 
 </div>
 ` )
-    // אולי צריך להחזיר לכפתור את (id="myBtn")
+
+
 }
 
 function creatStars(number) {
@@ -262,6 +268,11 @@ function imgs(type) {
         }
     });
 }
+function closLoadr() {
+
+    $("#loaderModal").css("display", "none");
+    $(".roaderSurface").css("display", "none");
+}
 
 function findHotelsOffers(cityCode, checkInDate, checkOutDate) {
     const reqParams = {
@@ -269,6 +280,7 @@ function findHotelsOffers(cityCode, checkInDate, checkOutDate) {
         checkInDate,
         checkOutDate,
     };
+    const errorNumber = 0;
     // console.log(`${HotelApiBaseUrl}/v2/shopping/hotel-offers?${joinObjectKeysAndValues(reqParams)}`);
     $.get({
         method: "GET",
@@ -276,20 +288,29 @@ function findHotelsOffers(cityCode, checkInDate, checkOutDate) {
         headers: {
             'Authorization': `Bearer ${getApiBearer()}`
         },
-        complete: () => {
-            $("#loaderModal").css("display", "none");
-            $(".roaderSurface").css("display", "none");
-        },
         success: (result) => {
-            if (result.data.length) {
+            closLoadr()
+            if (result.data.length === 0) {
+                errorNumber = 1
+            } else {
                 Object.entries(result.data).forEach(n => hotelObjet(n));
                 HOTELS.forEach(creatingHotels);
             }
         },
         error: () => {
+            errorNumber = 2
 
         },
+        complete: () => {
 
+            if (errorNumber === 1) {
+
+            }
+
+            if (errorNumber === 2) {
+
+            }
+        },
     });
 }
 
@@ -326,8 +347,9 @@ const modal = $("#myModal");
 const btn = $(".close");
 
 
-function CreatOrder(x) {
+function CreatOrder() {
     modal.css('display', "block")
+    loadAllLocalStorageItems()
     ELEMENTS.$ORDER.on("submit", function (event) {
         event.preventDefault();
         const form = event.target
@@ -338,21 +360,22 @@ function CreatOrder(x) {
 
     });
 }
+
 btn.on('click', () => {
     modal.css('display', "none");
 
-    saveToLocalStorage(key, value);
+    saveCustomerDetailsToLocal()
 
 })
 
-$(window).on('click', function (event) {
-    if (event.target == modal) {
-        console.log('yesss');
-        modal.css('display', "none");
+// $(window).on('click', function (event) {
+//     if (event.target != modal) {
+//         console.log('yesss');
+//         modal.css('display', "none");
 
-        saveToLocalStorage(key, value)
-    }
-})
+//         saveToLocalStorage(key, value)
+//     }
+// })
 
 
 
@@ -362,12 +385,59 @@ $(window).on('click', function (event) {
 //         saveToLocalStorage(key, value)
 //     }
 // }
+function loadAllLocalStorageItems() {
 
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = JSON.parse(localStorage.getItem(key));
+        $(`#${key}`).text(`${value}`);
+    }
+};
 
+function saveCustomerDetailsToLocal() {
+    const first_name = $('#first_name').val()
+    const last_name = $('#last_name').val()
+    const email = $('#email').val()
+    const contact_no = $('#contact_no').val()
 
+    let customerDetails = {
+        ' first_name': first_name,
+        'last_name': last_name,
+        'email': email,
+        'contact_no': contact_no
+    }
+    for (let [key, value] of Object.entries(customerDetails)) {
+        saveToLocalStorage(key, value)
+      }
+}
+
+function orderViewCompleted(Country, orderNem) {
+    const order = {
+        'Country': Country,
+        'orderNem': orderNem
+    }
+    orderHistory.push(order)
+
+    ELEMENTS.$DIV_CONTAINER.empty();
+    saveToLocalStorage(Country, orderNem)
+    ELEMENTS.$DIV_CONTAINER.append(`
+
+    <div class="orderViewCompleted">
+<p class="order">
+    We are pleased to announce that the order has been successfully completed, the order number is ${orderNem}
+</p>`)
+
+}
+populateStorage()
+function populateStorage() {
+    localStorage.setItem('bgcolor',JSON.stringify(ELEMENTS));
+    localStorage.setItem('font', 'Helvetica');
+    localStorage.setItem('image', 'myCat.png');
+}
 
 function saveToLocalStorage(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+
+    localStorage.setItem(key,JSON.stringify(value));
 }
 
 
@@ -404,7 +474,10 @@ function hotelObjet(hotel) {
         'price2': hotel[1].offers[0].price.total,
         'Default': Default(hotel[1].offers[0]),
         'options': options(hotel[1].offers[0].price.variations.changes),
-        'description_room': hotel[1].offers[0].room.description.text
+        'description_room': hotel[1].offers[0].room.description.text,
+        'code': hotel[1].offers[0].id,
+        "checkInDate": hotel[1].offers[0].checkInDate,
+        "checkOutDate": hotel[1].offers[0].checkOutDate,
     }
     HOTELS.push(hotels);
 
@@ -424,84 +497,84 @@ function options(option) {
     return rooms
 }
 
-// ---------------------------/
+// // ---------------------------/
 
 
 
-function addevent() {
-    $('#formcontainer').on("submit", function (event) {
-        console.log('1111111');
+// function addevent() {
+//     $('#formcontainer').on("submit", function (event) {
+//         console.log('1111111');
 
-        event.preventDefault();
-        const form = event.target
-        const data = {
-            first_name: form.first_name.value,
-            last_name: form.last_name.value,
-            email: form.email.value,
-            contact_no: form.contact_no.value,
-        }
-        validData(data) 
+//         event.preventDefault();
+//         const form = event.target
+//         const data = {
+//             first_name: form.first_name.value,
+//             last_name: form.last_name.value,
+//             email: form.email.value,
+//             contact_no: form.contact_no.value,
+//         }
+//         validData(data)
 
-    });
-}
+//     });
+// }
 
-function validData(data) {
-    if (ValidaName(data.first_name) && ValidaName(data.last_name) && ValidateEmail(data.email) &&  phonenumber(data.contact_no)) {
-        $('#formcontainer').addClass('was-validated')
+// function validData(data) {
+//     if (ValidaName(data.first_name) && ValidaName(data.last_name) && ValidateEmail(data.email) && phonenumber(data.contact_no)) {
+//         $('#formcontainer').addClass('was-validated')
 
-    }
- 
-}
-function ValidaName(name) {
-    const clinSpace = name.trim();
-    if (!clinSpace) {
-        return false;
-    } else {
+//     }
 
-        return true;
-    }
+// }
+// function ValidaName(name) {
+//     const clinSpace = name.trim();
+//     if (!clinSpace) {
+//         return false;
+//     } else {
 
-}
+//         return true;
+//     }
 
-function ValidateEmail(mail) {
-    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail.value)) {
-        return (true)
-    } else {
+// }
 
-        return false;
-    }
+// function ValidateEmail(mail) {
+//     if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail.value)) {
+//         return (true)
+//     } else {
 
-
-}
-function phonenumber(inputphon) {
-    const phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-    if ((inputphon.value.match(phone))) {
-        return true;
-    } else {
-
-        return false;
-    }
-}
+//         return false;
+//     }
 
 
+// }
+// function phonenumber(inputphon) {
+//     const phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+//     if ((inputphon.value.match(phone))) {
+//         return true;
+//     } else {
 
-$.post({
-    method: "POST",
-    url: `${HotelApiBaseUrl}/v2/shopping/hotel-offers?${joinObjectKeysAndValues(reqParams)}`,
-    headers: {
-        'Authorization': `Bearer ${getApiBearer()}`
-    }
-    
-    
-    ,
-    complete: () => {
-      
-    },
-    success: (result) => {
-    
-    },
-    error: () => {
+//         return false;
+//     }
+// }
 
-    },
 
-});
+
+// $.post({
+//     method: "POST",
+//     url: `${HotelApiBaseUrl}/v2/shopping/hotel-offers?${joinObjectKeysAndValues(reqParams)}`,
+//     headers: {
+//         'Authorization': `Bearer ${getApiBearer()}`
+//     }
+
+
+//     ,
+//     complete: () => {
+
+//     },
+//     success: (result) => {
+
+//     },
+//     error: () => {
+
+//     },
+
+// });
